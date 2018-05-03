@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Icon } from 'antd';
-import Modal from './Edit/Modal';
+import Modal from './Modal';
 const { Meta } = Card;
 
 class CardItem extends React.Component {
@@ -36,7 +36,16 @@ class CardItem extends React.Component {
 				return;
 			}
 
-			console.log('Received values of form: ', values);
+			fetch('http://localhost:3000/api', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(values),
+			})
+				.then(response => response.json())
+				.then(data => console.log(data))
+				.catch(err => console.err(err));
 			form.resetFields();
 			this.setState({ editVisible: false });
 		});
@@ -74,6 +83,7 @@ class CardItem extends React.Component {
 					visible={this.state.editVisible}
 					onOk={this.handleEdit}
 					onCancel={this.handleEditCancel}
+					titleModal="Edit"
 				/>
 			</Card>
 		);

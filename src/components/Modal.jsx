@@ -2,18 +2,18 @@ import React from 'react';
 import { Modal, Form } from 'antd';
 import FormItem from './Form';
 
-class EditModal extends React.Component {
+class ModalComponent extends React.Component {
 	render() {
 		const { visible, onOk, onCancel, form } = this.props;
 		const { getFieldDecorator } = form;
 
 		return (
 			<Modal
-				title="Edit Character"
+				title={`${this.props.titleModal} Character`}
 				visible={visible}
 				onOk={onOk}
 				onCancel={onCancel}
-				okText="Update"
+				okText={this.props.titleModal}
 			>
 				<FormItem formField={{ getFieldDecorator }} />
 			</Modal>
@@ -21,4 +21,4 @@ class EditModal extends React.Component {
 	}
 }
 
-export default Form.create()(EditModal);
+export default Form.create()(ModalComponent);

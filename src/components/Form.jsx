@@ -2,7 +2,7 @@ import React from 'react';
 import { Form, Input } from 'antd';
 const FormItem = Form.Item;
 
-class EditForm extends React.Component {
+class FormModal extends React.Component {
 	render() {
 		const { getFieldDecorator } = this.props.formField;
 		return (
@@ -23,9 +23,12 @@ class EditForm extends React.Component {
 						<Input type="textarea" />
 					)}
 				</FormItem>
+				<FormItem label="Image URL">
+					{getFieldDecorator('images')(<Input type="textarea" />)}
+				</FormItem>
 			</Form>
 		);
 	}
 }
 
-export default EditForm;
+export default FormModal;
