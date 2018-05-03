@@ -8,6 +8,7 @@ export default class LayoutComponent extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			endpoint: 'https://akino-favor-character-server.herokuapp.com/api',
 			listItem: [],
 			editVisible: false,
 		};
@@ -31,7 +32,7 @@ export default class LayoutComponent extends React.Component {
 				return;
 			}
 
-			fetch('http://localhost:3000/api', {
+			fetch(this.state.endpoint, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -55,7 +56,7 @@ export default class LayoutComponent extends React.Component {
 	};
 
 	componentDidMount() {
-		fetch('http://localhost:3000/api')
+		fetch(this.state.endpoint)
 			.then(result => result.json())
 			.then(data => this.setState({ listItem: data }));
 	}
