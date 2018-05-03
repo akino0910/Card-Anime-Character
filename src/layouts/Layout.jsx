@@ -2,7 +2,7 @@ import React from 'react';
 import Header from './Header';
 import Content from './Content';
 import Footer from './Footer';
-import { Layout } from 'antd';
+import { Layout, notification } from 'antd';
 
 export default class LayoutComponent extends React.Component {
 	constructor(props) {
@@ -40,14 +40,22 @@ export default class LayoutComponent extends React.Component {
 				body: JSON.stringify(values),
 			})
 				.then(response => response.json())
-				.then(data =>
+				.then(data => {
 					this.setState({
 						editVisible: false,
 						listItem: [...this.state.listItem, data],
-					})
-				)
-				.catch(err => console.err(err));
+					});
+					this.openNotification('success', 'Created character');
+				})
+				.catch(err => this.openNotification('error', err));
 			form.resetFields();
+		});
+	};
+
+	openNotification = (type, message) => {
+		notification[type]({
+			message,
+			duration: 4,
 		});
 	};
 
