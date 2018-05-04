@@ -4,11 +4,14 @@ import './index.css';
 import Layout from './layouts/Layout';
 import registerServiceWorker from './registerServiceWorker';
 
-import { createStore } from 'redux';
 import { Provider } from 'react-redux';
-import rootReducer from './reducers';
+import configureStore from './store/configureStore';
 
-const store = createStore(rootReducer);
+const store = configureStore();
+
+store.subscribe(() => {
+	console.log('store changed', store.getState());
+});
 
 ReactDOM.render(
 	<Provider store={store}>
@@ -16,4 +19,5 @@ ReactDOM.render(
 	</Provider>,
 	document.getElementById('root')
 );
+
 registerServiceWorker();

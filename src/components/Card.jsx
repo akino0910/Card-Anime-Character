@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Icon } from 'antd';
+import { Card, Icon, Popconfirm } from 'antd';
 import Modal from './Modal';
 const { Meta } = Card;
 
@@ -8,20 +8,34 @@ class CardItem extends React.Component {
 		super(props);
 		this.state = {
 			editVisible: false,
+			title: '',
 		};
 	}
 
+	// Delete
+	handleDeleteOK = e => {
+		console.log('Clicked ok button');
+		this.setState({
+			deleteVisible: false,
+		});
+	};
+	handleDeleteCancel = e => {
+		console.log('Clicked cancel button');
+		this.setState({
+			deleteVisible: false,
+		});
+	};
+
+	// Edit
 	showEditModal = () => {
 		this.setState({ editVisible: true });
 	};
-
 	handleEditOK = e => {
 		console.log('Clicked ok button');
 		this.setState({
 			editVisible: false,
 		});
 	};
-
 	handleEditCancel = e => {
 		console.log('Clicked cancel button');
 		this.setState({
@@ -60,7 +74,7 @@ class CardItem extends React.Component {
 				cover={
 					<img
 						alt={this.props.title}
-						src={this.props.infoItem.images}
+						src={this.props.infoCard.images}
 						height="225"
 						width="348"
 					/>
@@ -71,12 +85,20 @@ class CardItem extends React.Component {
 						style={{ color: 'blue' }}
 						onClick={this.showEditModal}
 					/>,
-					<Icon type="delete" style={{ color: 'red' }} />,
+					<Popconfirm
+						title="Are you sure delete this card?"
+						onConfirm={this.handleDeleteOK}
+						onCancel={this.handleDeleteCancel}
+						okText="Yes"
+						cancelText="No"
+					>
+						<Icon type="delete" style={{ color: 'red' }} />
+					</Popconfirm>,
 				]}
 			>
 				<Meta
-					title={this.props.infoItem.title}
-					description={this.props.infoItem.description}
+					title={this.props.infoCard.title}
+					description={this.props.infoCard.description}
 				/>
 				<Modal
 					wrappedComponentRef={this.saveFormRef}

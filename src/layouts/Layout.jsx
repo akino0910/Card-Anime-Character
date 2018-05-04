@@ -4,14 +4,20 @@ import Content from './Content';
 import Footer from './Footer';
 import { Layout, notification } from 'antd';
 
-export default class LayoutComponent extends React.Component {
+import { connect } from 'react-redux';
+import { cardsFetchData, addCard } from '../actions/cards';
+
+class LayoutComponent extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			endpoint: 'https://akino-favor-character-server.herokuapp.com/api',
-			listItem: [],
 			editVisible: false,
 		};
+	}
+
+	componentDidMount() {
+		this.props.fetchData(this.state.endpoint);
 	}
 
 	showCreateModal = () => {
@@ -43,8 +49,10 @@ export default class LayoutComponent extends React.Component {
 				.then(data => {
 					this.setState({
 						editVisible: false,
-						listItem: [...this.state.listItem, data],
+
+						// listItem: [...this.state.listItem, data],
 					});
+					this.props.addCard(data);
 					this.openNotification('success', 'Created character');
 				})
 				.catch(err => this.openNotification('error', err));
@@ -63,17 +71,12 @@ export default class LayoutComponent extends React.Component {
 		this.formRef = formRef;
 	};
 
-	componentDidMount() {
-		fetch(this.state.endpoint)
-			.then(result => result.json())
-			.then(data => this.setState({ listItem: data }));
-	}
 	render() {
 		return (
 			<Layout>
 				<Header />
 				<Content
-					listItem={this.state.listItem}
+					cards={this.props.cards}
 					showCreateModal={this.showCreateModal}
 					saveFormRef={this.saveFormRef}
 					editVisible={this.state.editVisible}
@@ -86,3 +89,18 @@ export default class LayoutComponent extends React.Component {
 		);
 	}
 }
+
+const mapStateToProps = state => {
+	return {
+		cards: state.cards,
+	};
+};
+
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchData: url => dispatch(cardsFetchData(url)),
+		addCard: card => dispatch(addCard(card)),
+	};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(LayoutComponent);

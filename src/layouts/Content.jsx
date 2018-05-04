@@ -73,10 +73,10 @@ export default class ContentComponent extends React.Component {
 							xl: 4,
 							xxl: 4,
 						}}
-						dataSource={this.props.listItem}
-						renderItem={item => (
+						dataSource={this.props.cards}
+						renderItem={card => (
 							<List.Item>
-								<Card infoItem={item} />
+								<Card infoCard={card} />
 							</List.Item>
 						)}
 					/>
