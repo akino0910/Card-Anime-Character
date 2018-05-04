@@ -5,10 +5,18 @@ export function addCard(card) {
 	};
 }
 
-export function deleteCard(card) {
+export function deleteCard(id) {
 	return {
-		type: 'ADD_CARD',
+		type: 'DELETE_CARD',
+		id,
+	};
+}
+
+export function editCard(card, index) {
+	return {
+		type: 'EDIT_CARD',
 		card,
+		index,
 	};
 }
 

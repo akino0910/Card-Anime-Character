@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Icon, Popconfirm } from 'antd';
+import { Card, Icon, Popconfirm, notification } from 'antd';
 import Modal from './Modal';
 const { Meta } = Card;
 
@@ -7,61 +7,83 @@ class CardItem extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			editVisible: false,
-			title: '',
+			visible: false,
 		};
 	}
 
+	openNotification = (type, message) => {
+		notification[type]({
+			message,
+			duration: 4,
+		});
+	};
+
 	// Delete
 	handleDeleteOK = e => {
-		console.log('Clicked ok button');
-		this.setState({
-			deleteVisible: false,
-		});
+		const id = this.props.infoCard._id;
+		fetch(`${this.props.endpoint}/${id}`, {
+			method: 'DELETE',
+		})
+			.then(response => response.json())
+			.then(() => {
+				this.props.deleteCard(id);
+				this.openNotification('success', 'Deleted character');
+			})
+			.catch(err => this.openNotification('error', err));
 	};
 	handleDeleteCancel = e => {
 		console.log('Clicked cancel button');
-		this.setState({
-			deleteVisible: false,
-		});
 	};
 
 	// Edit
-	showEditModal = () => {
-		this.setState({ editVisible: true });
-	};
-	handleEditOK = e => {
-		console.log('Clicked ok button');
-		this.setState({
-			editVisible: false,
+	setFormFields = data => {
+		this.formRef.props.form.setFieldsValue({
+			title: data.title,
+			description: data.description,
+			images: data.images,
 		});
+	};
+	// Get card from and set all field to form
+	showEditModal = () => {
+		console.log(this.props.index);
+		this.setState({ visible: true });
+		fetch(`${this.props.endpoint}/${this.props.infoCard._id}`, {
+			method: 'GET',
+		})
+			.then(response => response.json())
+			.then(data => {
+				this.setFormFields(data);
+			})
+			.catch(err => console.error(err));
 	};
 	handleEditCancel = e => {
-		console.log('Clicked cancel button');
 		this.setState({
-			editVisible: false,
+			visible: false,
 		});
 	};
-
-	handleEdit = () => {
+	handleEditOK = () => {
 		const form = this.formRef.props.form;
+		const id = this.props.infoCard._id;
 		form.validateFields((err, values) => {
 			if (err) {
 				return;
 			}
 
-			fetch('http://localhost:3000/api', {
-				method: 'POST',
+			fetch(`${this.props.endpoint}/${id}`, {
+				method: 'PUT',
 				headers: {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify(values),
 			})
 				.then(response => response.json())
-				.then(data => console.log(data))
-				.catch(err => console.err(err));
+				.then(data => {
+					this.props.editCard(data, this.props.index);
+					this.openNotification('success', 'Edited character');
+				})
+				.catch(err => this.openNotification('error', err));
 			form.resetFields();
-			this.setState({ editVisible: false });
+			this.setState({ visible: false });
 		});
 	};
 	saveFormRef = formRef => {
@@ -102,8 +124,8 @@ class CardItem extends React.Component {
 				/>
 				<Modal
 					wrappedComponentRef={this.saveFormRef}
-					visible={this.state.editVisible}
-					onOk={this.handleEdit}
+					visible={this.state.visible}
+					onOk={this.handleEditOK}
 					onCancel={this.handleEditCancel}
 					titleModal="Edit"
 				/>

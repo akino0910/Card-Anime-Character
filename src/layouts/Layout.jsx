@@ -5,32 +5,31 @@ import Footer from './Footer';
 import { Layout, notification } from 'antd';
 
 import { connect } from 'react-redux';
-import { cardsFetchData, addCard } from '../actions/cards';
-
+import {
+	cardsFetchData,
+	addCard,
+	deleteCard,
+	editCard,
+} from '../actions/cards';
 class LayoutComponent extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			endpoint: 'https://akino-favor-character-server.herokuapp.com/api',
-			editVisible: false,
+			visible: false,
 		};
 	}
 
 	componentDidMount() {
-		this.props.fetchData(this.state.endpoint);
+		this.props.fetchData(this.props.endpoint);
 	}
-
 	showCreateModal = () => {
-		this.setState({ editVisible: true });
+		this.setState({ visible: true });
 	};
-
 	handleCancel = e => {
-		console.log('Clicked cancel button');
 		this.setState({
-			editVisible: false,
+			visible: false,
 		});
 	};
-
 	handleCreate = () => {
 		const form = this.formRef.props.form;
 		form.validateFields((err, values) => {
@@ -38,7 +37,7 @@ class LayoutComponent extends React.Component {
 				return;
 			}
 
-			fetch(this.state.endpoint, {
+			fetch(this.props.endpoint, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -48,9 +47,7 @@ class LayoutComponent extends React.Component {
 				.then(response => response.json())
 				.then(data => {
 					this.setState({
-						editVisible: false,
-
-						// listItem: [...this.state.listItem, data],
+						visible: false,
 					});
 					this.props.addCard(data);
 					this.openNotification('success', 'Created character');
@@ -77,12 +74,15 @@ class LayoutComponent extends React.Component {
 				<Header />
 				<Content
 					cards={this.props.cards}
+					visible={this.state.visible}
 					showCreateModal={this.showCreateModal}
 					saveFormRef={this.saveFormRef}
-					editVisible={this.state.editVisible}
 					handleCreate={this.handleCreate}
 					handleCancel={this.handleCancel}
 					titleModal="Create"
+					endpoint={this.props.endpoint}
+					deleteCard={this.props.deleteCard}
+					editCard={this.props.editCard}
 				/>
 				<Footer />
 			</Layout>
@@ -93,6 +93,7 @@ class LayoutComponent extends React.Component {
 const mapStateToProps = state => {
 	return {
 		cards: state.cards,
+		endpoint: state.endpoint,
 	};
 };
 
@@ -100,6 +101,8 @@ const mapDispatchToProps = dispatch => {
 	return {
 		fetchData: url => dispatch(cardsFetchData(url)),
 		addCard: card => dispatch(addCard(card)),
+		deleteCard: id => dispatch(deleteCard(id)),
+		editCard: (card, index) => dispatch(editCard(card, index)),
 	};
 };
 

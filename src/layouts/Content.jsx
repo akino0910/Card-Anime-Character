@@ -52,7 +52,7 @@ export default class ContentComponent extends React.Component {
 						</Button>
 						<Modal
 							wrappedComponentRef={this.props.saveFormRef}
-							visible={this.props.editVisible}
+							visible={this.props.visible}
 							onOk={this.props.handleCreate}
 							onCancel={this.props.handleCancel}
 							titleModal="Create"
@@ -74,9 +74,15 @@ export default class ContentComponent extends React.Component {
 							xxl: 4,
 						}}
 						dataSource={this.props.cards}
-						renderItem={card => (
+						renderItem={(card, index) => (
 							<List.Item>
-								<Card infoCard={card} />
+								<Card
+									index={index}
+									infoCard={card}
+									endpoint={this.props.endpoint}
+									deleteCard={this.props.deleteCard}
+									editCard={this.props.editCard}
+								/>
 							</List.Item>
 						)}
 					/>
