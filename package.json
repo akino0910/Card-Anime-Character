@@ -1,5 +1,5 @@
 {
-    "react-redux": "^5.0.7",
+	"react-redux": "^5.0.7",
 	"name": "card-anime-character",
 	"version": "0.1.0",
 	"private": true,
