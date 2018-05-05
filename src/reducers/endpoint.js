@@ -1,5 +1,5 @@
 export default function endpoint(
-	state = 'https://akino-favor-character-server.herokuapp.com/api',
+	state = 'https://express-mongo-crud-yswjwsheqy.now.sh/api',
 	action
 ) {
 	switch (action.type) {
