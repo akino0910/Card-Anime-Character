@@ -1,1 +1,1 @@
-https://akino-favor-character-client.herokuapp.com/
+in README.md
